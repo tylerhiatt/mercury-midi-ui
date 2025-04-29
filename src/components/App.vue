@@ -2,11 +2,11 @@
   <div class="app">
     <nav class="app-header">
       <router-link :to="{ name: 'home' }" class="app-brand">
-        OpenDeck Configurator
+        Mercury MIDI Configurator
       </router-link>
 
       <span v-if="!isHomePage && boardName" class="app-board-info">
-        <template v-if="isBootloaderMode">OpenDeck DFU mode</template>
+        <template v-if="isBootloaderMode">Mercury MIDI DFU mode</template>
         <template v-else>
           <small>Board</small>
           <strong>{{ boardName }}</strong>
@@ -80,23 +80,19 @@
         <nav class="app-about">
           <h3 class="heading">About</h3>
           <p class="text-sm">
-            OpenDeck Configurator is a WebMIDI based configuration tool for all
-            MIDI devices running OpenDeck firmware. OpenDeck is a platform
-            suited both for prototyping and developing custom MIDI controllers.
+            Mercury MIDI Configurator is a WebMIDI based configuration tool for
+            all MIDI devices running Mercury MIDI firmware. TODO: More stuff
+            blah blah blah
           </p>
         </nav>
         <nav class="app-resources">
           <h3 class="heading">Resources</h3>
           <ul class="list">
             <li>
-              <a href="https://github.com/paradajz/OpenDeck"
-                >OpenDeck GitHub repository</a
-              >
+              <a href="">Link 1</a>
             </li>
             <li>
-              <a href="https://shanteacontrols.com/"
-                >Shantea Controls official Web</a
-              >
+              <a href="">Link 2</a>
             </li>
           </ul>
         </nav>

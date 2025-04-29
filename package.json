@@ -1,6 +1,6 @@
 {
-  "name": "opendeck-ui",
-  "description": "Configuration utility for OpenDeck MIDI platform",
+  "name": "mercury-midi-ui",
+  "description": "Configuration utility for Mercury MIDI board platform",
   "main": "main.js",
   "version": "0.1.0",
   "files": [
@@ -9,10 +9,6 @@
   ],
   "engines": {
     "node": ">=10.16.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wyrdcode/opendeck-ui.git"
   },
   "scripts": {
     "dev": "vite --port 3002",
