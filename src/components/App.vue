@@ -81,8 +81,7 @@
           <h3 class="heading">About</h3>
           <p class="text-sm">
             Mercury MIDI Configurator is a WebMIDI based configuration tool for
-            all MIDI devices running Mercury MIDI firmware. TODO: More stuff
-            blah blah blah
+            all MIDI devices running Mercury MIDI firmware.
           </p>
         </nav>
         <nav class="app-resources">
