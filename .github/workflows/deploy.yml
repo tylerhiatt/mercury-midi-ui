@@ -34,8 +34,7 @@ jobs:
 
       - name: Install & Build
         run: |
-          npm_config_esbuild_binary_path=$(npm explore esbuild -- npm bin)/esbuild
-          npm ci --legacy-peer-deps
+          npm ci
           npm run build
           cp dist/index.html dist/404.html
 

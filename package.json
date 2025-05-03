@@ -13,14 +13,10 @@
   "scripts": {
     "dev": "vite --port 3002",
     "build": "vite build",
-    "format": "prettier --config .prettierrc --write --parser typescript \"src/**/*.ts\"",
-    "lint": "eslint . --ext .ts",
-    "lint-and-fix": "eslint . --ext .ts --fix",
     "start": "electron ."
   },
   "dependencies": {
     "@tailwindcss/ui": "^0.5.0",
-    "@vue/eslint-config-typescript": "^5.1.0",
     "body-scroll-lock": "^3.0.3",
     "file-saver": "^2.0.2",
     "lodash-es": "^4.17.15",
@@ -34,27 +30,9 @@
   "devDependencies": {
     "@types/file-saver": "^2.0.1",
     "@types/lodash-es": "^4.17.3",
-    "@typescript-eslint/eslint-plugin": "^3.1.0",
-    "@typescript-eslint/parser": "^3.1.0",
     "@vue/compiler-sfc": "^3.0.0",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "eslint": "^7.1.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.3",
-    "eslint-plugin-prettier-vue": "^2.1.0",
-    "eslint-plugin-vue": "^7.0.0-beta.0",
     "postcss-preset-env": "^6.7.0",
-    "prettier": "^2.0.5",
     "typescript": "^3.9.3",
-    "vite": "^1.0.0-rc.3",
-    "vue-eslint-parser": "^7.1.0"
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier --write"
-    ],
-    "*.ts": [
-      "prettier --parser=typescript --write"
-    ]
+    "vite": "^1.0.0-rc.3"
   }
 }
