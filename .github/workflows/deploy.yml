@@ -34,7 +34,8 @@ jobs:
 
       - name: Install & Build
         run: |
-          npm ci
+          npm install esbuild --platform=linux --arch=x64 --ignore-scripts
+          npm ci --legacy-peer-deps
           npm run build
           cp dist/index.html dist/404.html
 
