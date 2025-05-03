@@ -2,13 +2,13 @@
   <Hero
     v-if="!outputs.length"
     custom="h-64"
-    title="No OpenDeck board found. Please connect the board in order to use the
+    title="No board found. Please connect the board in order to use the
       interface."
   />
   <Hero
     v-else-if="outputs.length > 1"
     custom="h-64"
-    title="Multiple OpenDeck boards detected. Please connect one board at the time in
+    title="Multiple boards detected. Please connect one board at the time in
       order to use configurator."
   />
   <Hero v-else custom="py-24">

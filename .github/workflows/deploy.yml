@@ -1,65 +1,73 @@
-name: Deploy UI
+name: Mercury MIDI CI/CD
 
 on:
   push:
     branches:
-      - master
+      - main # updates website only when code is pulled into main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
 
 jobs:
-  deploy:
-    name: Deploy configurator
-    runs-on: ubuntu-22.04
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set_version.outputs.version }}
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
-      - name: Prepare build env
+          node-version: "16"
+
+      - name: Set version
+        id: set_version
         run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends \
-          yarn
-      - name: Build and deploy configurator
+          version=$(date +'%Y%m%d.%H%M%S')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "{\"version\": \"$version\"}" > public/version.json
+
+      - name: Install & Build
         run: |
-          git config --global user.name "webui_bot"
-          git config --global user.email "2544094+webui_bot@users.noreply.github.com"
-          make prod
-          git checkout gh-pages
-          rm -rf _assets/* index.html
-          mv dist/* .
-          git add index.html _assets*
-          git commit --allow-empty -m "update webui"
-          git push https://github.com/shanteacontrols/OpenDeckUI gh-pages
-  release:
-    name: Create new release
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Setup node
-        uses: actions/setup-node@v2
+          npm ci
+          npm run build
+          cp dist/index.html dist/404.html
+
+      - name: Configure AWS OIDC
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          node-version: '16'
-      - name: Prepare build env
-        run: |
-          npm install -g electron-packager
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends \
-          yarn \
-          zip \
-          wine \
-          hub
-      - name: Build
-        run: |
-          make prod
-          make pkg PLATFORM=linux
-          make pkg PLATFORM=darwin
-          make pkg PLATFORM=win32
-      - name: Generate new version number
-        run: echo "::set-output name=version::$(date +%Y%m%d%H%M)"
-        id: version
-      - name: Publish new release
+          audience: sts.amazonaws.com
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/${{ secrets.CI_IAM_ROLE }}
+
+      - name: Upload to S3 (versioned path)
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.set_version.outputs.version }}
         run: |
-          hub release create $(find ./build -type f -name "*.zip" -printf "-a %p ") -m "${{ steps.version.outputs.version }}" "${{ steps.version.outputs.version }}"
+          aws s3 cp dist s3://${{ secrets.APP_BUCKET }}/$VERSION --recursive
+
+      - name: Update CloudFront origin path
+        env:
+          VERSION: ${{ steps.set_version.outputs.version }}
+        run: |
+          aws cloudfront get-distribution-config --id ${{ secrets.DISTRIBUTION_ID }} > dist-config.json
+          etag=$(jq -r '.ETag' dist-config.json)
+          jq '.DistributionConfig' dist-config.json > config.json
+          jq --arg version "/$VERSION" '.Origins.Items[0].OriginPath = $version' config.json > updated-config.json
+          aws cloudfront update-distribution \
+            --id ${{ secrets.DISTRIBUTION_ID }} \
+            --if-match $etag \
+            --distribution-config file://updated-config.json
+
+          # Wait for update to finish before invalidating
+          while [ "$(aws cloudfront get-distribution --id ${{ secrets.DISTRIBUTION_ID }} --query 'Distribution.Status' --output text)" != "Deployed" ]; do echo "Waiting for deployment..."; sleep 5; done
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.DISTRIBUTION_ID }} \
+            --paths "/*"
