@@ -130,7 +130,7 @@ export const connectDeviceStoreToInput = async (
   if (isBootloaderMode) {
     deviceState.boardName = output.name;
     deviceState.connectionState = DeviceConnectionState.Open;
-    deviceState.connectionPromise = (null as unknown) as Promise<any>;
+    deviceState.connectionPromise = null as unknown as Promise<any>;
     startDeviceConnectionWatcher();
     return;
   }
@@ -145,7 +145,7 @@ export const connectDeviceStoreToInput = async (
     handler: (firmwareVersion: string) => setInfo({ firmwareVersion }),
   });
   deviceState.connectionState = DeviceConnectionState.Open;
-  deviceState.connectionPromise = (null as unknown) as Promise<any>;
+  deviceState.connectionPromise = null as unknown as Promise<any>;
   startDeviceConnectionWatcher();
 
   // These requests won't run until connection promise is finished
@@ -323,7 +323,7 @@ const loadDeviceInfo = async (): Promise<void> => {
     command: Request.IdentifyBoard,
     handler: (value: number[]) => {
       const board = getBoardDefinition(value);
-      const boardName = (board && board.name) || "Custom OpenDeck board";
+      const boardName = (board && board.name) || "Mercury MIDI Board";
       const firmwareFileName = board && board.firmwareFileName;
 
       setInfo({ boardName, firmwareFileName });
