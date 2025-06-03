@@ -88,10 +88,7 @@
           <h3 class="heading">Resources</h3>
           <ul class="list">
             <li>
-              <a href="">Link 1</a>
-            </li>
-            <li>
-              <a href="">Link 2</a>
+              <a href="https://www.mercurymidi.com/">Home</a>
             </li>
           </ul>
         </nav>
@@ -108,12 +105,8 @@ import router from "../router";
 export default defineComponent({
   name: "App",
   setup() {
-    const {
-      outputId,
-      boardName,
-      firmwareVersion,
-      activePreset,
-    } = deviceStoreMapped;
+    const { outputId, boardName, firmwareVersion, activePreset } =
+      deviceStoreMapped;
     const isHomePage = computed(
       () => router.currentRoute.value.name === "home",
     );
