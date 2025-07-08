@@ -181,6 +181,12 @@ export const Boards: IBoardDefinition[] = [
     oldId: [],
     firmwareFileName: "af_ib_nrf52840.sysex",
   },
+  {
+    name: "Mercury MIDI",
+    id: [24, 38, 105, 55],
+    oldId: [],
+    firmwareFileName: null,
+  },
 ];
 
 export default Boards;
